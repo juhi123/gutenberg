@@ -268,8 +268,9 @@ function Editor() {
 														/>
 													}
 													content={
-														<>
+														<div className="edit-site-visual-editor">
 															<Notices />
+															<Popover.Slot name="block-toolbar" />
 															{ template && (
 																<BlockEditor
 																	setIsInserterOpen={
@@ -278,7 +279,7 @@ function Editor() {
 																/>
 															) }
 															<KeyboardShortcuts />
-														</>
+														</div>
 													}
 													actions={
 														<>

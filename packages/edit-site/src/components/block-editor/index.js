@@ -17,7 +17,7 @@ import {
 	__unstableUseEditorStyles as useEditorStyles,
 	__unstableIframe as Iframe,
 } from '@wordpress/block-editor';
-import { Popover } from '@wordpress/components';
+import { DropZoneProvider } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -35,9 +35,11 @@ function Canvas( { settings } ) {
 
 	return (
 		<div tabIndex="-1" ref={ ref }>
-			<WritingFlow>
-				<BlockList className="edit-site-block-editor__block-list" />
-			</WritingFlow>
+			<DropZoneProvider>
+				<WritingFlow>
+					<BlockList className="edit-site-block-editor__block-list" />
+				</WritingFlow>
+			</DropZoneProvider>
 		</div>
 	);
 }
@@ -94,15 +96,12 @@ export default function BlockEditor( { setIsInserterOpen } ) {
 			<SidebarInspectorFill>
 				<BlockInspector />
 			</SidebarInspectorFill>
-			<div className="edit-site-visual-editor">
-				<Popover.Slot name="block-toolbar" />
-				<Iframe
-					style={ resizedCanvasStyles }
-					head={ window.__editorStyles.html }
-				>
-					<Canvas settings={ settings } />
-				</Iframe>
-			</div>
+			<Iframe
+				style={ resizedCanvasStyles }
+				head={ window.__editorStyles.html }
+			>
+				<Canvas settings={ settings } />
+			</Iframe>
 		</BlockEditorProvider>
 	);
 }
