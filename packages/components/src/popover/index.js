@@ -115,14 +115,15 @@ function computeAnchorRect(
 		const { top, bottom } = anchorRef;
 		const topRect = top.getBoundingClientRect();
 		const bottomRect = bottom.getBoundingClientRect();
-		let rect = new window.DOMRect(
-			topRect.left,
-			topRect.top,
-			topRect.width,
-			bottomRect.bottom - topRect.top
+		const rect = offsetIframe(
+			new window.DOMRect(
+				topRect.left,
+				topRect.top,
+				topRect.width,
+				bottomRect.bottom - topRect.top
+			),
+			top.ownerDocument
 		);
-
-		rect = offsetIframe( rect, top.ownerDocument );
 
 		if ( shouldAnchorIncludePadding ) {
 			return rect;

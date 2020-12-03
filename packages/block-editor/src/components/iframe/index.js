@@ -5,12 +5,13 @@ import { useState, useEffect, createPortal, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { useResizeObserver } from '@wordpress/compose';
 
-const className = 'editor-styles-wrapper';
+const BODY_CLASS_NAME = 'editor-styles-wrapper';
+const BLOCK_PREFIX = 'wp-block';
 
 /**
  * Clones stylesheets targetting the editor canvas to the given document. A
  * stylesheet is considered targetting the editor a canvas if it contains the
- * `editor-styles-wrapper` or `wp-block` class selectors.
+ * `editor-styles-wrapper`, `wp-block`, or `wp-block-*` class selectors.
  *
  * Ideally, this hook should be removed in the future and styles should be added
  * explicitly as editor styles.
@@ -38,8 +39,8 @@ function useStyleSheetsCompat( doc ) {
 			const isMatch = Array.from( cssRules ).find(
 				( { selectorText } ) =>
 					selectorText &&
-					( selectorText.includes( `.${ className }` ) ||
-						selectorText.includes( `.wp-block` ) )
+					( selectorText.includes( `.${ BODY_CLASS_NAME }` ) ||
+						selectorText.includes( `.${ BLOCK_PREFIX }` ) )
 			);
 
 			if ( isMatch && ! doc.getElementById( ownerNode.id ) ) {
@@ -50,7 +51,7 @@ function useStyleSheetsCompat( doc ) {
 }
 
 /**
- * Bubbles some event types (keydown, keypress and dragover) to parent document
+ * Bubbles some event types (keydown, keypress, and dragover) to parent document
  * document to ensure that the keyboard shortcuts and drag and drop work.
  *
  * Ideally, we should remove event bubbling in the future. Keyboard shortcuts
@@ -75,7 +76,7 @@ function useBubbleEvents( doc ) {
 				init[ key ] = event[ key ];
 			}
 
-			if ( event.view && event instanceof event.view.MouseEvent ) {
+			if ( event instanceof defaultView.MouseEvent ) {
 				const rect = frameElement.getBoundingClientRect();
 				init.clientX += rect.left;
 				init.clientY += rect.top;
@@ -91,14 +92,14 @@ function useBubbleEvents( doc ) {
 
 		const eventTypes = [ 'keydown', 'keypress', 'dragover' ];
 
-		eventTypes.forEach( ( name ) => {
+		for ( const name of eventTypes ) {
 			doc.addEventListener( name, bubbleEvent );
-		} );
+		}
 
 		return () => {
-			eventTypes.forEach( ( name ) => {
+			for ( const name of eventTypes ) {
 				doc.removeEventListener( name, bubbleEvent );
-			} );
+			}
 		};
 	}, [] );
 }
@@ -116,13 +117,13 @@ function useBubbleEvents( doc ) {
 function useBodyClassName( doc ) {
 	useEffect( () => {
 		doc.dir = document.dir;
-		doc.body.className = className;
+		doc.body.className = BODY_CLASS_NAME;
 
-		Array.from( document.body.classList ).forEach( ( name ) => {
+		for ( const name of document.body.classList ) {
 			if ( name.startsWith( 'admin-color-' ) ) {
 				doc.body.classList.add( name );
 			}
-		} );
+		}
 	}, [] );
 }
 
