@@ -40,7 +40,7 @@ describe( 'Template Part', () => {
 					page: 'gutenberg-edit-site',
 				} ).slice( 1 )
 			);
-			await page.waitForSelector( '.edit-site-visual-editor' );
+			await page.waitForSelector( '.edit-site-visual-editor iframe' );
 		} );
 
 		async function updateHeader( content ) {
